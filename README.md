@@ -1,6 +1,7 @@
 # Git-linked_Image_Ledger
 
 GitHub上で任意の画像ファイルのハッシュ値を記録するwebアプリです。
+
 GitHubアカウントのアクセストークンが必要です。
 
 
