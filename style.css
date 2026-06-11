@@ -1,0 +1,204 @@
+/* -------------------------------------------------- */
+/* Tailwind-like Static Utility CSS                  */
+/* -------------------------------------------------- */
+
+/* 基本リセット & 共通設定 */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+body {
+    background-color: #111827;
+    color: #f3f4f6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+button {
+    color: #eee;
+}
+
+h2 {
+    margin-left: 1.0rem;
+}
+
+/* レイアウト・フレックスボックス */
+.flex { display: flex !important; }
+.flex-col { flex-direction: column; }
+.flex-1 { flex: 1 1 0%; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+
+/* 表示・非表示・スクロール */
+.hidden { display: none !important; }
+.overflow-hidden { overflow: hidden; }
+.overflow-y-auto { overflow-y: auto; }
+.overflow-auto { overflow: auto; }
+
+/* サイズ設定 */
+.h-screen { height: 100vh; }
+.h-16 { height: 4rem; }
+.w-full { width: 100%; }
+.w-64 { width: 16rem; }
+.min-h-screen { min-height: 100vh; }
+.min-h-300px { min-height: 300px; }
+.w-12 { width: 3rem; }
+.h-12 { height: 3rem; }
+.w-4 { width: 1rem; }
+.h-4 { height: 1rem; }
+.max-w-md { max-width: 28rem; }
+.max-w-150px { max-width: 150px; }
+.max-w-200px { max-width: 200px; }
+
+/* 背景色 */
+.bg-gray-800 { background-color: #1f2937; }
+.bg-gray-850 { background-color: #141c2b; }
+.bg-gray-750 { background-color: #2a3446; }
+.bg-gray-900 { background-color: #111827; }
+.bg-gray-900-50 { background-color: rgba(17, 24, 39, 0.5); }
+.bg-gray-750-50 { background-color: rgba(42, 52, 70, 0.5); }
+.bg-gray-700 { background-color: #374151; }
+.bg-indigo-600 { background-color: #4f46e5; }
+.bg-indigo-900-50 { background-color: rgba(49, 46, 129, 0.5); }
+.bg-emerald-600 { background-color: #059669; }
+.bg-black-70 { background-color: rgba(0, 0, 0, 0.7); }
+.bg-transparent { background-color: transparent; }
+
+/* ホバーエフェクト */
+.hover-bg-indigo-500:hover { background-color: #6366f1; }
+.hover-bg-emerald-500:hover { background-color: #10b981; }
+.hover-bg-gray-600:hover { background-color: #4b5563; }
+.hover-bg-gray-700:hover { background-color: #374151; }
+.hover-border-indigo-500:hover { border-color: #6366f1; }
+.hover-text-white:hover { color: #ffffff; }
+.hover-text-red-400:hover { color: #f87171; }
+
+/* パディング (余白) */
+.p-0 { padding: 0; }
+.p-1 { padding: 0.25rem; }
+.p-2 { padding: 0.5rem; }
+.p-3 { padding: 0.75rem; }
+.p-4 { padding: 1rem; }
+.p-6 { padding: 1.5rem; }
+.p-8 { padding: 2rem; }
+.px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.py-1-5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+.px-4 { 
+    padding-left: 1rem; 
+    padding-right: 1rem; 
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+
+/* マージン */
+.m-0 { margin: 0; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 0.75rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mt-1 { margin-top: 0.25rem; }
+.mt-0-5 { margin-top: 0.125rem; }
+.ml-2 { margin-left: 0.5rem; }
+
+/* タイポグラフィ */
+.text-2xl { font-size: 1.5rem; line-height: 2rem; }
+.text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.text-xs { font-size: 0.75rem; line-height: 1.5rem; }
+.text-10px { font-size: 10px; }
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+.font-medium { font-weight: 500; }
+.font-sans { font-family: ui-sans-serif, system-ui, sans-serif; }
+.font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+.text-center { text-align: center; }
+.uppercase { text-transform: uppercase; }
+
+/* 文字色 */
+.text-white { color: #ffffff; }
+.text-gray-100 { color: #f3f4f6; }
+.text-gray-200 { color: #e5e7eb; }
+.text-gray-300 { color: #d1d5db; }
+.text-gray-400 { color: #9ca3af; }
+.text-gray-500 { color: #6b7280; }
+.text-indigo-400 { color: #818cf8; }
+.text-indigo-300 { color: #a5b4fc; }
+.text-indigo-200 { color: #c7d2fe; }
+.text-red-500 { color: #ef4444; }
+
+/* ボーダー */
+.border { border: 1px solid #374151; }
+.border-0 { border-width: 0; }
+.border-2 { border-width: 2px; }
+.border-gray-700 { border-color: #374151; }
+.border-gray-600 { border-color: #4b5563; }
+.border-indigo-700 { border-color: #4338ca; }
+.border-indigo-500 { border-color: #6366f1; }
+.border-r { border-right: 1px solid #374151; }
+.border-b { border-bottom: 1px solid #374151; }
+.border-dashed { border-style: dashed; }
+
+/* フォーカス状態 */
+.focus-outline-none:focus { outline: 2px solid transparent; outline-offset: 2px; }
+.focus-border-indigo-500:focus { border-color: #6366f1; }
+
+/* 角丸設定 */
+.rounded { border-radius: 0.5rem; }
+.rounded-lg { border-radius: 0.5rem; }
+.rounded-xl { border-radius: 0.75rem; }
+
+/* シャドウ */
+.shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+.shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+.shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+
+/* アニメーション */
+.transition { transition-property: background-color, border-color, color, fill, stroke, box-shadow; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+.duration-200 { transition-duration: 200ms; }
+
+/* SVG */
+.fill-none { fill: none; }
+.stroke-currentColor { stroke: currentColor; }
+
+/* テーブルスタイル */
+.text-left { text-align: left; }
+.border-collapse { border-collapse: collapse; }
+
+/* 文字あふれ・縮小制御 */
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.break-all { word-break: break-all; }
+.break-words { overflow-wrap: break-word; }
+.flex-shrink-0 { flex-shrink: 0; }
+
+/* モーダル固定配置 */
+.fixed { position: fixed; }
+.inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+.z-50 { z-index: 50; }
+
+/* 要素同士の間隔制御 */
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.space-y-4 > * + * { margin-top: 1rem; }
+.space-y-6 > * + * { margin-top: 1.5rem; }
+.space-y-1 > * + * { margin-top: 0.25rem; }
+.space-x-4 > * + * { margin-left: 1rem; }
+.divide-y > * + * { border-top: 1px solid #374151; }
+
+/* その他スタイル調整 */
+.cursor-pointer { cursor: pointer; }
+input, textarea, button { font-family: inherit; }
+textarea { resize: vertical; }
+
+/* ドラッグエリアのホバーアニメーション */
+.group:hover p { color: #ffffff; }
+.group:hover svg { color: #818cf8; }
+/* helper class to replace Tailwind's group-hover: utility */
+.group:hover .group-hover-text-indigo-400 { color: #818cf8; }

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git-linked Image & File Ledger Web App</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="./app.js" defer></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col font-sans">
+
+    <div id="login-screen" class="flex-1 flex items-center justify-center p-4">
+        <div class="bg-gray-800 p-8 rounded-xl shadow-2xl max-w-md w-full border border-gray-700">
+            <h1 class="text-2xl font-bold mb-2 text-center text-indigo-400">Git-linked File Ledger</h1>
+            <p class="text-gray-400 text-sm mb-6 text-center">GitHub API と IndexedDB を連携した汎用ファイル管理システム</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">GitHub アクセストークン (PAT)</label>
+                          <input type="password" id="github-token" placeholder="ghp_XXXXXXXXXXXXXXXXXXXX" 
+                              class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus-outline-none focus-border-indigo-500 text-white">
+                    <p class="text-xs text-gray-500 mt-1">※ `repo` スコープが必要です。トークンはブラウザ内のみに保存されます。</p>
+                </div>
+                <button id="btn-login" class="w-full bg-indigo-600 hover-bg-indigo-500 text-white font-medium py-2 px-4 rounded-lg transition duration-200 shadow-md">
+                    アプリケーションを起動
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-dashboard" class="flex-1 flex hidden overflow-hidden h-screen">
+        
+        <aside class="w-64 bg-gray-800 border-r border-gray-700 flex flex-col">
+            <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+                <span class="font-bold text-indigo-400">リポジトリ一覧</span>
+                <button id="btn-logout" class="text-xs bg-gray-700 hover-bg-gray-600 px-2 py-1 rounded text-gray-300">切断</button>
+            </div>
+            
+            <div class="p-4 border-b border-gray-700 bg-gray-850">
+                <p class="text-xs font-semibold text-gray-400 uppercase mb-2">新規リモート作成</p>
+                  <input type="text" id="new-repo-name" placeholder="repo-name" 
+                      class="w-full text-sm px-3 py-1-5 bg-gray-700 border border-gray-600 rounded focus-outline-none focus-border-indigo-500 mb-2">
+                  <button id="btn-create-repo" class="w-full text-xs bg-indigo-600 hover-bg-indigo-500 py-1-5 rounded font-medium transition">
+                    GitHub上に作成 & 同期
+                </button>
+            </div>
+
+            <div class="p-4 border-b border-gray-700 bg-gray-850">
+                <p class="text-xs font-semibold text-gray-400 uppercase mb-2">バックアップからインポート</p>
+                <button id="btn-trigger-import" class="w-full text-xs bg-emerald-600 hover-bg-emerald-500 py-1-5 rounded font-medium transition flex items-center justify-center gap-1">
+                    📁 ZIPファイルを選択
+                </button>
+                <input type="file" id="import-zip-input" accept=".zip" class="hidden">
+            </div>
+
+            <div id="repo-list" class="flex-1 overflow-y-auto p-2 space-y-1">
+                </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col bg-gray-900 overflow-hidden">
+            <header class="h-16 border-b border-gray-700 flex items-center justify-between px-6 bg-gray-800">
+                <div>
+                    <h2 id="current-repo-title" class="text-lg font-bold text-white">リポジトリを選択してください</h2>
+                    <p id="current-repo-id" class="text-xs text-gray-400"></p>
+                </div>
+                <div>
+                    <button id="btn-export-zip" class="hidden bg-emerald-600 hover-bg-emerald-500 text-white text-sm font-medium py-2 px-4 rounded-lg transition flex items-center gap-2">
+                        📥 ローカルバックアップ (ZIP)
+                    </button>
+                </div>
+            </header>
+
+            <div id="repo-content-area" class="flex-1 flex flex-col p-6 overflow-y-auto space-y-6 hidden">
+                
+                <div id="drop-zone" class="border-2 border-dashed border-gray-600 hover-border-indigo-500 bg-gray-800 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer transition group">
+                    <svg class="w-12 h-12 text-gray-400 group-hover-text-indigo-400 mb-3 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                    </svg>
+                    <p class="text-sm text-gray-300 font-medium">ここにファイルをドラッグ＆ドロップ、またはクリックして選択</p>
+                    <p class="text-xs text-gray-500 mt-1">画像、.clip, .psd, .svg等あらゆる形式に対応（自動命名 & SHA-256計算）</p>
+                    <input type="file" id="file-input" class="hidden">
+                </div>
+
+                <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden shadow-lg flex-1 flex flex-col min-h-300px">
+                    <div class="px-4 py-3 bg-gray-750 border-b border-gray-700 font-semibold text-sm text-gray-300">
+                        直近で追加されたファイル履歴
+                    </div>
+                    <div class="flex-1 overflow-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-gray-900-50 text-gray-400 text-xs uppercase border-b border-gray-700">
+                                    <th class="p-3">ファイル名</th>
+                                    <th class="p-3">SHA-256 ハッシュ</th>
+                                    <th class="p-3">ノート (備考)</th>
+                                    <th class="p-3">登録日時 (JST)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="file-table-body" class="divide-y divide-gray-700">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div id="repo-placeholder" class="flex-1 flex flex-col items-center justify-center text-gray-500">
+                <p>左サイドバーからリポジトリを選択するか、新規作成・インポートしてください。</p>
+            </div>
+        </main>
+    </div>
+
+    <div id="note-modal" class="fixed inset-0 bg-black-70 flex items-center justify-center hidden p-4 z-50">
+        <div class="bg-gray-800 border border-gray-700 rounded-xl p-6 max-w-md w-full shadow-2xl">
+            <h3 class="text-lg font-bold text-white mb-2">メタデータの追加</h3>
+            <p id="modal-filename-preview" class="text-xs text-indigo-400 break-all font-mono mb-4"></p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">ノート / 備考内容</label>
+                    <textarea id="modal-note-text" rows="3" placeholder="このファイルに関するメモを入力してください..." 
+                              class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus-outline-none focus-border-indigo-500 text-white text-sm"></textarea>
+                </div>
+                
+                <div class="flex justify-end gap-2 text-sm font-medium">
+                    <button id="btn-modal-cancel" class="px-4 py-2 bg-gray-700 hover-bg-gray-600 rounded-lg transition text-gray-300">キャンセル</button>
+                    <button id="btn-modal-submit" class="px-4 py-2 bg-indigo-600 hover-bg-indigo-500 rounded-lg transition text-white">確定して同期 (Push)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
